@@ -244,7 +244,7 @@ int main(void)
 {
   t_grid grid;
 
-  solve(&grid, "map");
+  solve(&grid, "massive_map");
   print_grid(grid);
   return (0);
 }
