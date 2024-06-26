@@ -273,6 +273,7 @@ void print_grid_number(t_grid *grid)
   i = 0;
   while (i < grid->h)
   {
+    printf("%5d | ", i);
     j = 0;
     while (j < grid->w - 1)
     {
