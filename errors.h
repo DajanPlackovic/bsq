@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "grid.h"
+#include "clean.h"
 
 #define FAILED_READ 101
 #define FAILED_OPEN 102
@@ -11,21 +12,7 @@
 
 void error_out(int code, t_grid *grid)
 {
-  int i;
-
-  if (grid->fd != -1)
-    close(grid->fd);
-  if (grid->buffer)
-    free(grid->buffer);
-  if (grid && grid->numgrid)
-  {
-    i = 0;
-    while (grid->numgrid[i])
-    {
-      free(grid->numgrid[i]);
-      i++;
-    }
-  }
+  free_grid(grid);
   printf("%d", code);
   exit(1);
 }

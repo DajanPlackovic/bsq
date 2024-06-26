@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include "grid.h"
 #include "errors.h"
+#include "clean.h"
 
 // read in first line
 int file_open(t_grid *grid, char *path)
@@ -289,12 +290,20 @@ void print_grid_number(t_grid *grid)
   }
 }
 
+void init_grid(t_grid *grid)
+{
+  grid->numgrid = 0;
+  grid->buffer = 0;
+}
+
 int main(void)
 {
   t_grid grid;
 
+  init_grid(&grid);
   solve(&grid, "massive_map");
   // print_grid_number(&grid);
   print_grid(&grid);
+  free_grid(&grid);
   return (0);
 }
