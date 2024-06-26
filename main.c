@@ -67,7 +67,6 @@ char *get_config(t_grid *grid, int clen)
     free(config);
     error_out(FAILED_READ, grid);
   }
-  config[clen + 1] = '\0';
   return (config);
 }
 

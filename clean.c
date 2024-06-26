@@ -13,7 +13,7 @@ void free_grid(t_grid *grid)
   if (grid->numgrid)
   {
     i = 0;
-    while (grid->numgrid[i] && i < grid->h)
+    while (i < grid->h && grid->numgrid[i])
     {
       free(grid->numgrid[i]);
       i++;
