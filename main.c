@@ -162,12 +162,17 @@ void solve_line(t_grid *grid, int line_num)
         grid->numgrid[line_num][i] = 1;
       else
       {
-        min = grid->numgrid[line_num - 1][i];
-        if (i && grid->numgrid[line_num][i - 1] < min)
-          min = grid->numgrid[line_num][i - 1];
-        if (i && grid->numgrid[line_num - 1][i - 1] < min)
-          min = grid->numgrid[line_num - 1][i - 1];
-        grid->numgrid[line_num][i] = min + 1;
+        if (i)
+        {
+          min = grid->numgrid[line_num - 1][i];
+          if (i && grid->numgrid[line_num][i - 1] < min)
+            min = grid->numgrid[line_num][i - 1];
+          if (i && grid->numgrid[line_num - 1][i - 1] < min)
+            min = grid->numgrid[line_num - 1][i - 1];
+          grid->numgrid[line_num][i] = min + 1;
+        }
+        else
+          grid->numgrid[line_num][i] = 1;
       }
       if (grid->numgrid[line_num][i] > grid->max)
       {
@@ -212,27 +217,71 @@ void solve(t_grid *grid, char *path)
   close(grid->fd);
 }
 
-void print_grid(t_grid grid)
+char *make_printable(t_grid *grid, int *len)
+{
+  int i;
+  int j;
+  int top;
+  int left;
+  char *printgrid;
+
+  printgrid = (char *)malloc(grid->h * grid->w + 1);
+  if (!printgrid)
+    error_out(FAILED_MALLOC, grid);
+  top = grid->y - grid->max;
+  left = grid->x - grid->max;
+  i = 0;
+  while (i < grid->h)
+  {
+    j = 0;
+    while (j < grid->w - 1)
+    {
+      if (i > top && i <= grid->y && j > left && j <= grid->x)
+        printgrid[i * grid->w + j] = grid->fill;
+      else if (grid->numgrid[i][j] == 0)
+        printgrid[i * grid->w + j] = grid->obstacle;
+      else
+        printgrid[i * grid->w + j] = grid->empty;
+      j++;
+    }
+    printgrid[i * grid->w + j] = '\n';
+    i++;
+  }
+  printgrid[i * grid->w] = '\0';
+  *len = i * grid->w;
+  return (printgrid);
+}
+
+void print_grid(t_grid *grid)
+{
+  int len;
+  char *printgrid;
+
+  printgrid = make_printable(grid, &len);
+  write(1, printgrid, len);
+  free(printgrid);
+}
+void print_grid_number(t_grid *grid)
 {
   int i;
   int j;
   int top;
   int left;
 
-  top = grid.y - grid.max;
-  left = grid.x - grid.max;
+  top = grid->y - grid->max;
+  left = grid->x - grid->max;
   i = 0;
-  while (i < grid.h)
+  while (i < grid->h)
   {
     j = 0;
-    while (j < grid.w - 1)
+    while (j < grid->w - 1)
     {
-      if (i > top && i < grid.y && j > left && j < grid.x)
-        printf("%c", grid.fill);
-      else if (grid.numgrid[i][j] == 0)
-        printf("%c", grid.obstacle);
+      if (i > top && i < grid->y && j > left && j < grid->x)
+        printf("%3d", grid->numgrid[i][j]);
+      else if (grid->numgrid[i][j] == 0)
+        printf("%3d", grid->numgrid[i][j]);
       else
-        printf("%c", grid.empty);
+        printf("%3d", grid->numgrid[i][j]);
       j++;
     }
     printf("\n");
@@ -245,6 +294,7 @@ int main(void)
   t_grid grid;
 
   solve(&grid, "massive_map");
-  print_grid(grid);
+  // print_grid_number(&grid);
+  print_grid(&grid);
   return (0);
 }
