@@ -205,7 +205,7 @@ void solve(t_grid *grid, char *path)
     error_out(FAILED_MALLOC, grid);
   bytes_read = 1;
   line_num = 0;
-  while (bytes_read > 0)
+  while (bytes_read > 0 && line_num < grid->h)
   {
     bytes_read = read(grid->fd, grid->buffer, grid->w);
     if (!valid_line(grid))
